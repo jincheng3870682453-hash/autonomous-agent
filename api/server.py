@@ -201,9 +201,9 @@ if frontend_dir.exists():
 async def startup():
     global agent
     agent = AutonomousAgent()
-    print(f"🤖 Agent [{agent.agent_id}] started via API server")
-    print(f"📖 Docs: http://localhost:8000/docs")
-    print(f"📊 Dashboard: http://localhost:8000/dashboard")
+    print(f"[OK] Agent [{agent.agent_id}] started via API server")
+    print(f"[OK] Docs: http://localhost:8000/docs")
+    print(f"[OK] Dashboard: http://localhost:8000/dashboard")
 
 
 # ---- Main ----

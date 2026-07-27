@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 连接测试</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f0f2f5; padding: 20px; }
+.card { max-width: 600px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+h2 { margin-bottom: 16px; color: #1a1a2e; }
+.form-group { margin-bottom: 12px; }
+label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: 500; }
+select, input { width: 100%; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+.btn { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 8px; margin-top: 12px; }
+.btn-primary { background: #1677ff; color: #fff; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+#result { margin-top: 16px; padding: 12px; border-radius: 4px; font-size: 13px; font-family: 'JetBrains Mono', monospace; white-space: pre-wrap; }
+.success { background: #f6ffed; border: 1px solid #b7eb8f; color: #389e0d; }
+.error { background: #fff2f0; border: 1px solid #ffccc7; color: #cf1322; }
+.info { background: #e6f7ff; border: 1px solid #91d5ff; color: #096dd9; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>AI 连接测试页面</h2>
+  
+  <div class="form-group">
+    <label>供应商</label>
+    <select id="provider" onchange="onProviderChange()">
+      <option value="deepseek">DeepSeek</option>
+      <option value="openai">OpenAI</option>
+      <option value="qwen">通义千问</option>
+      <option value="ernie">文心一言</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>模型</label>
+    <select id="model">
+      <option value="deepseek-v4-flash">deepseek-v4-flash</option>
+      <option value="deepseek-v4-pro">deepseek-v4-pro</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Base URL</label>
+    <input id="base_url" type="text" value="https://api.deepseek.com" />
+  </div>
+
+  <div class="form-group">
+    <label>API Key</label>
+    <input id="api_key" type="password" placeholder="sk-..." />
+  </div>
+
+  <div class="form-group">
+    <label>Temperature</label>
+    <input id="temperature" type="number" value="0.7" step="0.1" min="0" max="2" style="width:100px" />
+  </div>
+
+  <button class="btn btn-primary" id="testBtn" onclick="testConnection()">测试连接</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+const providerConfigs = {
+  deepseek: { base_url: 'https://api.deepseek.com', models: ['deepseek-v4-flash', 'deepseek-v4-pro'] },
+  openai: { base_url: 'https://api.openai.com/v1', models: ['gpt-4.1', 'gpt-4.1-mini', 'gpt-4o', 'gpt-4o-mini', 'o3', 'o3-mini'] },
+  qwen: { base_url: 'https://dashscope.aliyuncs.com/compatible-mode/v1', models: ['qwen3-max', 'qwen3-plus', 'qwen3-turbo', 'qwen3-flash'] },
+  ernie: { base_url: 'https://qianfan.baidubce.com/v2', models: ['ernie-4.5-8k-preview', 'ernie-4.0-8k', 'ernie-4.0-turbo-8k'] }
+};
+
+function onProviderChange() {
+  const p = document.getElementById('provider').value;
+  const cfg = providerConfigs[p];
+  document.getElementById('base_url').value = cfg.base_url;
+  const modelSel = document.getElementById('model');
+  modelSel.innerHTML = cfg.models.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+async function testConnection() {
+  const btn = document.getElementById('testBtn');
+  const result = document.getElementById('result');
+  btn.disabled = true;
+  btn.textContent = '测试中...';
+  result.className = 'info';
+  result.textContent = '正在发送请求...';
+
+  const config = {
+    provider: document.getElementById('provider').value,
+    model: document.getElementById('model').value,
+    api_key: document.getElementById('api_key').value,
+    base_url: document.getElementById('base_url').value,
+    temperature: parseFloat(document.getElementById('temperature').value) || 0.7
+  };
+
+  const start = Date.now();
+  try {
+    const resp = await fetch('/api/ai/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config)
+    });
+    const data = await resp.json();
+    const latency = Date.now() - start;
+    
+    if (data.success) {
+      result.className = 'success';
+      result.textContent = `✅ 连接成功！\n延迟: ${data.latency_ms || latency}ms\n消息: ${data.message}`;
+    } else {
+      result.className = 'error';
+      result.textContent = `❌ 连接失败\nHTTP ${resp.status}\n错误: ${data.error}\n延迟: ${latency}ms`;
+    }
+  } catch (e) {
+    result.className = 'error';
+    result.textContent = `❌ 网络错误\n${e.message}\n请确认服务器是否在运行 (http://127.0.0.1:5001)`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '测试连接';
+  }
+}
+</script>
+</body>
+</html>
