@@ -1,37 +1,132 @@
 {
   "cycle": 1,
-  "timestamp": "2026-07-27T18:38:14.427258",
+  "timestamp": "2026-07-27T19:04:20.865760",
+  "agent_id": "3993f3e0",
   "stages": {
     "collect": {
       "status": "ok",
-      "data_points": 2
+      "collectors_run": 3,
+      "successful": 2,
+      "details": {
+        "LocationCollector": {
+          "status": "ok",
+          "data": {
+            "ip-api": {
+              "status": "success",
+              "country": "China",
+              "countryCode": "CN",
+              "region": "ZJ",
+              "regionName": "Zhejiang",
+              "city": "Hangzhou",
+              "zip": "",
+              "lat": 30.2943,
+              "lon": 120.1663,
+              "timezone": "Asia/Shanghai",
+              "isp": "China Unicom Zhejiang Province Network",
+              "org": "",
+              "as": "AS4837 CHINA UNICOM China169 Backbone",
+              "query": "101.71.39.83"
+            },
+            "ipinfo": {
+              "status": 429,
+              "error": {
+                "title": "Rate limit hit",
+                "message": "Sign up at ipinfo.io"
+              }
+            }
+          },
+          "elapsed_ms": 902
+        },
+        "GitHubCollector": {
+          "status": "empty",
+          "elapsed_ms": 4
+        },
+        "SystemCollector": {
+          "status": "ok",
+          "data": {
+            "knowledge_total": 2,
+            "events_total": 2,
+            "growth_total": 0,
+            "cycles_total": 0,
+            "graph_nodes": 0,
+            "timestamp": "2026-07-27T19:04:21.790255"
+          },
+          "elapsed_ms": 8
+        }
+      }
     },
     "learn": {
-      "insights_found": 1,
+      "patterns_found": 2,
+      "patterns": [
+        {
+          "type": "category_dominance",
+          "title": "Knowledge Focus",
+          "detail": "Category 'location' dominates with 2/3 entries (66.7%)",
+          "confidence": 0.6666666666666666
+        },
+        {
+          "type": "activity_pattern",
+          "title": "24h Activity",
+          "detail": "3 events in last 24h across 2 types",
+          "confidence": 0.06
+        }
+      ],
+      "anomalies_found": 0,
+      "anomalies": [],
+      "insights_generated": 1,
       "insights": [
         {
-          "type": "pattern_detected",
-          "title": "Data Collection Frequency",
-          "content": "Collected 1 events across 1 categories",
-          "confidence": 0.01
+          "type": "insight",
+          "title": "Knowledge Focus",
+          "content": "Category 'location' dominates with 2/3 entries (66.7%)",
+          "confidence": 0.6666666666666666,
+          "source": "category_dominance",
+          "actionable": false
         }
       ]
     },
     "growth": {
       "version": "1.0.1",
       "changes": [
-        "Version bumped to 1.0.1"
-      ]
+        "Weather data not yet collected - consider enabling weather collector"
+      ],
+      "change_count": 1
     }
   },
+  "summary": "🧠 Knowledge: 4 entries in 3 categories\n📊 Events: 4 total\n🌱 Growth: 1 actions\n🔄 Cycles: 0 completed\n🔧 Skills: 0 installed\n💡 Latest insight: N/A",
   "stats": {
-    "total_knowledge": 2,
-    "total_events": 3,
-    "total_growths": 2,
-    "categories": {
-      "insight": 1,
-      "location": 1
+    "knowledge": {
+      "total": 4,
+      "categories": {
+        "location": 2,
+        "insight": 1,
+        "system_status": 1
+      }
     },
-    "last_updated": "2026-07-27T18:38:15.619285"
+    "events": {
+      "total": 4,
+      "recent_24h": {
+        "collect_success": 2,
+        "collect_empty": 1,
+        "evolution": 1
+      }
+    },
+    "growth": {
+      "total": 1
+    },
+    "skills": {
+      "installed": 0
+    },
+    "cycles": {
+      "total": 0
+    },
+    "trends": {
+      "daily_knowledge": {
+        "2026-07-27": 4
+      }
+    },
+    "graph": {},
+    "last_updated": "2026-07-27T19:04:21.850151"
   },
-  "summary": 
+  "version": "1.0.1"
+}

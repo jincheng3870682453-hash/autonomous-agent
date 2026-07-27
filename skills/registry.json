@@ -1,0 +1,59 @@
+{
+  "name": "Autonomous Agent Skill Registry",
+  "description": "Official skill marketplace for Autonomous Agent platform",
+  "version": "1.0.0",
+  "skills": [
+    {
+      "name": "system_status",
+      "version": "1.0.0",
+      "description": "Generate system status reports and health dashboards",
+      "author": "system",
+      "tags": ["system", "monitoring", "builtin"],
+      "category": "system"
+    },
+    {
+      "name": "data_export",
+      "version": "1.0.0",
+      "description": "Export memory data to JSON format",
+      "author": "system",
+      "tags": ["data", "export", "builtin"],
+      "category": "data"
+    },
+    {
+      "name": "weather_analyzer",
+      "version": "1.0.0",
+      "description": "Analyze weather patterns and generate forecasts",
+      "author": "community",
+      "tags": ["weather", "analysis", "forecast"],
+      "category": "data",
+      "repo_url": "https://github.com/example/weather-analyzer-skill"
+    },
+    {
+      "name": "stock_tracker",
+      "version": "1.0.0",
+      "description": "Track stock prices and analyze market trends",
+      "author": "community",
+      "tags": ["stock", "finance", "market"],
+      "category": "finance",
+      "repo_url": "https://github.com/example/stock-tracker-skill"
+    },
+    {
+      "name": "code_reviewer",
+      "version": "1.0.0",
+      "description": "Automated code review and quality analysis",
+      "author": "community",
+      "tags": ["code", "review", "quality"],
+      "category": "development",
+      "repo_url": "https://github.com/example/code-reviewer-skill"
+    },
+    {
+      "name": "news_digest",
+      "version": "1.0.0",
+      "description": "Collect and summarize daily news from multiple sources",
+      "author": "community",
+      "tags": ["news", "summarize", "daily"],
+      "category": "content",
+      "repo_url": "https://github.com/example/news-digest-skill"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+agent:
+  name: Autonomous Agent
+  id: 3993f3e0
+  version: 1.0.1
+  description: A self-growing, self-evolving AI agent platform
+  log_level: INFO
+runtime:
+  mode: cloud
+  cycle_interval: 3600
+  max_cycles_per_run: 1
+  timeout_seconds: 600
+  auto_commit: true
+  auto_push: true
+memory:
+  engine: sqlite
+  database: memory/memory.db
+  fts_enabled: true
+  graph_enabled: true
+  max_records: 100000
+  auto_archive_cycles: 100
+  retention_days: 365
+collectors:
+  location:
+    enabled: true
+    providers:
+    - ip-api
+    - ipinfo
+    timeout: 10
+  weather:
+    enabled: false
+    provider: openweathermap
+    api_key: ''
+  news:
+    enabled: false
+    sources:
+    - hackernews
+    - github_trending
+  github:
+    enabled: true
+    trending: true
+    per_page: 5
+  system:
+    enabled: true
+learning:
+  pattern_detection:
+    enabled: true
+    min_data_points: 5
+    window_size: 100
+  anomaly_detection:
+    enabled: true
+    threshold: 2.0
+  prediction:
+    enabled: false
+    forecast_horizon: 24
+  insight_generation:
+    enabled: true
+    min_confidence: 0.6
+growth:
+  auto_tune: true
+  version_bump: true
+  strategy_evolution: true
+  self_healing: true
+  learning_rate: 0.1
+  learning_rate_step: 0.05
+  max_learning_rate: 1.0
+skills:
+  auto_discover: true
+  registry_url: https://raw.githubusercontent.com/jincheng3870682453-hash/autonomous-agent/main/skills/registry.json
+  install_path: skills/installed
+  allow_auto_install: true
+  trusted_authors:
+  - '*'
+channels:
+  cli:
+    enabled: true
+  api:
+    enabled: true
+    host: 0.0.0.0
+    port: 8000
+    docs_enabled: true
+    cors_origins:
+    - '*'
+  telegram:
+    enabled: false
+    bot_token: ''
+  discord:
+    enabled: false
+    bot_token: ''
+llm:
+  enabled: false
+  provider: openai
+  model: gpt-4o-mini
+  api_key: ''
+  max_tokens: 1024
+  temperature: 0.7
+frontend:
+  enabled: true
+  static_dir: frontend
+  title: Autonomous Agent Dashboard
+  refresh_interval: 5
+health:
+  max_consecutive_failures: 3
+  recovery_cooldown: 300
+  alert_on_failure: false

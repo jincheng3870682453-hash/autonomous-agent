@@ -1,30 +1,33 @@
-# Autonomous Self-Growing Agent
-# 自主循环增长代理 - GitHub Actions 云端运行版
-
 name: 🤖 Autonomous Agent Cycle
 
 on:
   schedule:
-    # 每小时运行一次
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'       # Every hour
   workflow_dispatch:
-    # 也支持手动触发
     inputs:
-      cycles:
-        description: 'Number of cycles to run'
+      mode:
+        description: 'Run mode'
         required: false
-        default: '1'
+        default: 'cycle'
+        type: choice
+        options:
+          - cycle
+          - status
+
+permissions:
+  contents: write
 
 jobs:
   agent-cycle:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -33,41 +36,80 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: |
-          pip install requests
+        run: pip install -r requirements.txt
 
       - name: Run Autonomous Agent
+        id: agent
         run: |
-          python src/engine.py
+          python run.py ${{ inputs.mode || 'cycle' }}
         env:
           PYTHONUNBUFFERED: 1
 
-      - name: Commit & Push Changes (Self-Growth)
+      - name: Commit Self-Growth Changes
         run: |
           git config user.name "🤖 Autonomous Agent"
           git config user.email "agent@autonomous.local"
-          
-          # 提交记忆库和数据增长
-          git add memory/ data/ config.json agent.log
-          git diff --staged --quiet || (
-            git commit -m "🌱 Auto-growth: Cycle $(date +'%Y%m%d-%H%M') - Knowledge: $(python -c 'import sqlite3; c=sqlite3.connect(\"memory/memory.db\"); print(c.execute(\"SELECT COUNT(*) FROM knowledge\").fetchone()[0])') entries"
-            git push
-          )
-          echo "✅ Self-growth committed"
 
-      - name: Generate Growth Report
+          # Stage all changes
+          git add memory/ data/ config.yaml agent.log agent.json
+          git add skills/registry.json
+
+          # Check if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            # Get stats for commit message
+            KNOWLEDGE=$(python -c "
+import sqlite3
+try:
+    c = sqlite3.connect('memory/memory.db')
+    kc = c.execute('SELECT COUNT(*) FROM knowledge').fetchone()[0]
+    print(kc)
+except: print(0)
+            ")
+            git commit -m "🌱 Auto-growth: $(date +'%Y%m%d-%H%M') | Knowledge: ${KNOWLEDGE} entries"
+            git push
+            echo "✅ Self-growth committed & pushed"
+          fi
+
+      - name: Generate Summary
         run: |
-          echo "## 🤖 Agent Growth Report" >> $GITHUB_STEP_SUMMARY
-          echo "**Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "## 🤖 Agent Cycle Report" >> $GITHUB_STEP_SUMMARY
+          echo "**Time:** $(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
           python -c "
-  import sqlite3, json
-  db = sqlite3.connect('memory/memory.db')
-  kc = db.execute('SELECT COUNT(*) FROM knowledge').fetchone()[0]
-  ec = db.execute('SELECT COUNT(*) FROM events').fetchone()[0]
-  gc = db.execute('SELECT COUNT(*) FROM growth_log').fetchone()[0]
-  cats = db.execute('SELECT category, COUNT(*) FROM knowledge GROUP BY category').fetchall()
-  print(f'- Knowledge: {kc} entries')
-  print(f'- Events: {ec}')
-  print(f'- Growths: {gc}')
-  print(f'- Categories: {dict(cats)}')
-  " >> $GITHUB_STEP_SUMMARY
+import sqlite3, json
+try:
+    db = sqlite3.connect('memory/memory.db')
+    kc = db.execute('SELECT COUNT(*) FROM knowledge').fetchone()[0]
+    ec = db.execute('SELECT COUNT(*) FROM events').fetchone()[0]
+    gc = db.execute('SELECT COUNT(*) FROM growth_log').fetchone()[0]
+    sc = db.execute('SELECT COUNT(*) FROM skill_registry').fetchone()[0]
+    cc = db.execute('SELECT COUNT(*) FROM cycle_reports').fetchone()[0]
+
+    cats = db.execute('SELECT category, COUNT(*) FROM knowledge GROUP BY category ORDER BY COUNT(*) DESC').fetchall()
+
+    recent = db.execute(\"\"\"
+        SELECT action, detail, created_at FROM growth_log
+        ORDER BY created_at DESC LIMIT 5
+    \"\"\").fetchall()
+
+    print(f'### 📊 Statistics')
+    print(f'- **Knowledge:** {kc} entries')
+    print(f'- **Events:** {ec}')
+    print(f'- **Growth Actions:** {gc}')
+    print(f'- **Skills:** {sc}')
+    print(f'- **Cycles:** {cc}')
+    print()
+    print(f'### 📂 Categories')
+    for cat, cnt in cats[:8]:
+        print(f'- {cat}: {cnt}')
+    print()
+    if recent:
+        print(f'### 🌱 Recent Growth')
+        for action, detail, ts in recent:
+            print(f'- [{ts[:19]}] {action}: {detail}')
+except Exception as e:
+    print(f'Error: {e}')
+          " >> $GITHUB_STEP_SUMMARY
