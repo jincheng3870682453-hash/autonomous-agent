@@ -1,0 +1,73 @@
+# Autonomous Self-Growing Agent
+# 自主循环增长代理 - GitHub Actions 云端运行版
+
+name: 🤖 Autonomous Agent Cycle
+
+on:
+  schedule:
+    # 每小时运行一次
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    # 也支持手动触发
+    inputs:
+      cycles:
+        description: 'Number of cycles to run'
+        required: false
+        default: '1'
+
+jobs:
+  agent-cycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Autonomous Agent
+        run: |
+          python src/engine.py
+        env:
+          PYTHONUNBUFFERED: 1
+
+      - name: Commit & Push Changes (Self-Growth)
+        run: |
+          git config user.name "🤖 Autonomous Agent"
+          git config user.email "agent@autonomous.local"
+          
+          # 提交记忆库和数据增长
+          git add memory/ data/ config.json agent.log
+          git diff --staged --quiet || (
+            git commit -m "🌱 Auto-growth: Cycle $(date +'%Y%m%d-%H%M') - Knowledge: $(python -c 'import sqlite3; c=sqlite3.connect(\"memory/memory.db\"); print(c.execute(\"SELECT COUNT(*) FROM knowledge\").fetchone()[0])') entries"
+            git push
+          )
+          echo "✅ Self-growth committed"
+
+      - name: Generate Growth Report
+        run: |
+          echo "## 🤖 Agent Growth Report" >> $GITHUB_STEP_SUMMARY
+          echo "**Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          python -c "
+  import sqlite3, json
+  db = sqlite3.connect('memory/memory.db')
+  kc = db.execute('SELECT COUNT(*) FROM knowledge').fetchone()[0]
+  ec = db.execute('SELECT COUNT(*) FROM events').fetchone()[0]
+  gc = db.execute('SELECT COUNT(*) FROM growth_log').fetchone()[0]
+  cats = db.execute('SELECT category, COUNT(*) FROM knowledge GROUP BY category').fetchall()
+  print(f'- Knowledge: {kc} entries')
+  print(f'- Events: {ec}')
+  print(f'- Growths: {gc}')
+  print(f'- Categories: {dict(cats)}')
+  " >> $GITHUB_STEP_SUMMARY

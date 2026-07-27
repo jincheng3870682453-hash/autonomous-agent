@@ -1,0 +1,13 @@
+{
+  "version": "1.0.1",
+  "collect_interval_minutes": 60,
+  "learn_interval_minutes": 30,
+  "max_memory_entries": 100000,
+  "apis_enabled": [
+    "ip-api",
+    "worldtimeapi"
+  ],
+  "auto_optimize": true,
+  "created_at": "2026-07-27T18:38:14.404135",
+  "last_evolved": "2026-07-27T18:38:15.596961"
+}
