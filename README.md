@@ -1,59 +1,113 @@
-# Autonomous Self-Growing Agent 🤖
 
-## 这是什么？
+<p align="center">
+  <img src="https://img.shields.io/badge/status-self--growing-brightgreen?style=for-the-badge" alt="Self Growing" />
+  <img src="https://img.shields.io/badge/runs_on-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions" alt="GitHub Actions" />
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge" alt="MIT License" />
+</p>
 
-一个**完全自主运行的自我进化代理系统**。不跑在你本地，而是在 GitHub Actions 云端自动执行。
+<p align="center">
+  <h1 align="center">🧬 Autonomous Agent</h1>
+  <p align="center"><em>A self-growing, self-evolving agent that never sleeps.</em></p>
+</p>
 
-## 它做什么？
+---
 
-1. 📡 **自动采集数据** - 位置数据、公开 API、趋势信息
-2. 🧠 **记忆学习** - SQLite 持久化存储，模式分析
-3. 🌱 **自我增长** - 自动调整参数、版本号递增
-4. 🔄 **自循环** - GitHub Actions 每小时自动触发
+## 🌌 What Is This?
 
-## 快速开始
+**Autonomous Agent** is an AI agent that **runs itself** — no local server, no manual triggers, no human babysitting. It lives in the cloud via **GitHub Actions**, wakes up every hour, collects real-world data, builds its own memory, learns from patterns, and evolves its own configuration.
 
-```bash
-# 1. 初始化 Git 仓库
-cd autonomous-agent
-git init
-git add .
-git commit -m "Initial commit: Autonomous Agent"
+> It doesn't ask. It just grows.
 
-# 2. 推送到 GitHub
-git remote add origin https://github.com/YOUR_USER/autonomous-agent.git
-git push -u origin main
+---
 
-# 3. 等待 GitHub Actions 自动运行
-# 也可以手动触发：Actions → Autonomous Agent Cycle → Run workflow
+## ✨ Capabilities
+
+| Module | Description |
+|--------|-------------|
+| 📡 **Data Collector** | Fetches geolocation, public APIs, and environmental data autonomously |
+| 🧠 **Memory Bank** | SQLite-backed persistent memory that grows with every cycle |
+| 🔍 **Learning Loop** | Analyzes historical data, detects patterns, generates insights |
+| 🌱 **Self Growth** | Auto-tunes parameters, increments version, expands knowledge base |
+| 🔄 **Auto Cycle** | GitHub Actions triggers every hour — zero human intervention |
+| 📝 **Auto Commit** | Every insight, config change, and version bump is committed back to the repo |
+
+---
+
+## 🏗 Architecture
+
+```
+ ┌─────────────────────────────────────────────────┐
+ │                  GitHub Actions                  │
+ │                                                 │
+ │   ┌─────────┐    ┌──────────┐    ┌──────────┐  │
+ │   │ Collect │───▶│  Learn   │───▶│  Grow    │  │
+ │   │  Data   │    │ Patterns │    │ Config   │  │
+ │   └─────────┘    └──────────┘    └──────────┘  │
+ │        │                              │         │
+ │        ▼                              ▼         │
+ │   ┌──────────────────────────────────────┐     │
+ │   │         Memory Bank (SQLite)          │     │
+ │   │    ┌──────┬──────┬──────┬──────┐     │     │
+ │   │    │Geo   │API   │Trends│Self  │     │     │
+ │   │    │Data  │Data  │      │Config│     │     │
+ │   │    └──────┴──────┴──────┴──────┘     │     │
+ │   └──────────────────────────────────────┘     │
+ │                      │                          │
+ │                      ▼                          │
+ │               ┌─────────────┐                   │
+ │               │ Auto Commit │                   │
+ │               └─────────────┘                   │
+ └─────────────────────────────────────────────────┘
 ```
 
-## 本地测试
+---
+
+## 🚀 Quick Start
+
+### Push to GitHub
+
+```bash
+git clone https://github.com/YOUR_USER/autonomous-agent.git
+cd autonomous-agent
+```
+
+That's it. Once pushed, GitHub Actions takes over automatically.
+
+### Run Locally (for testing)
 
 ```bash
 pip install requests
 python src/engine.py
 ```
 
-## 架构
+---
 
-```
-Cloud (GitHub Actions)
-  ├── 每小时自动触发
-  ├── 采集位置/公开数据
-  ├── 分析模式生成洞察
-  ├── 自我进化（改配置、升版本）
-  └── Auto Commit 回仓库
-```
-
-## 文件结构
+## 📂 Project Structure
 
 ```
 autonomous-agent/
-├── src/engine.py          # 核心引擎
-├── memory/memory.db        # 记忆数据库（自动增长）
-├── data/                   # 采集数据存储
-├── config.json             # 配置（自动进化）
-├── agent.log               # 运行日志
-└── .github/workflows/      # CI/CD 云端任务
+├── src/
+│   └── engine.py                 # Core engine: memory, learning, growth
+├── memory/
+│   └── memory.db                 # Persistent knowledge base
+├── data/                         # Collected data archives
+├── .github/workflows/
+│   └── agent-cycle.yml           # Cloud automation schedule
+├── scripts/
+│   └── install.py                # Skill installer
+├── config.json                   # Self-evolving configuration
+├── requirements.txt
+└── README.md
 ```
+
+---
+
+## 📜 License
+
+MIT © 2025 — Free to use, modify, and distribute.
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ for autonomous evolution</sub>
+</p>
