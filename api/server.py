@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
 from typing import Optional, Dict, List, Any
 from datetime import datetime
@@ -74,12 +74,8 @@ class SkillInstallRequest(BaseModel):
 # ---- Agent Routes ----
 @app.get("/")
 async def root():
-    return {
-        "name": "Autonomous Agent API",
-        "version": "1.0.0",
-        "docs": "/docs",
-        "status": "running"
-    }
+    """根路径重定向到 Dashboard"""
+    return RedirectResponse(url="/dashboard/index.html")
 
 @app.get("/api/status", response_model=StatusResponse)
 async def get_status():
